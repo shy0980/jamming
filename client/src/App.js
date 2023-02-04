@@ -13,9 +13,7 @@ import { Dashboard } from "./dashboard/Dashboard";
 import { Signup } from "./signup/signup";
 import { RegisterPost } from "./RegisterPost/RegisterPost";
 import { SignupInvester } from "./signup/signupInvester";
-import { InvesterLogin } from "./login/LoginInvester";
 import M from "materialize-css";
-import { LoginStartup } from "./login/LoginStartup";
 import { DashboardInv } from "./dashboard/DashboardInvester";
 
 function App() {
@@ -33,8 +31,6 @@ function App() {
       </PostProvider>}/>
       <Route path="/:userID/main" element={<Dashboard />}/>
       <Route path="/investerSignUp" element={<SignupInvester/>}/>
-      <Route path="/investerLogin" element={<InvesterLogin/>}/>
-      <Route path="/LoginStartup" element={<LoginStartup/>}/>
       <Route path="/:invID/maininvester" element={<DashboardInv/>}/>  
     </Routes>
   </div>)

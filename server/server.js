@@ -409,6 +409,20 @@ app.put("/suggest/:postID/:invID", async(req,res)=>{
     }))
 })
 
+//get whole details of invester
+app.post("/invester/:id", async(req, res)=>{
+    return (await commitToDB(prisma.invester.findFirst({
+        where:{
+            id: req.params.id,
+        },
+        select:{
+            name: true,
+            emailId:true,
+            intrest: true,
+        }
+    })))    
+})
+
 async function commitToDB(promise) {
     const [error, data] = await app.to(promise)
     if(error) return app.httpErrors.internalServerError(error.message)

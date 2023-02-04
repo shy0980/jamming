@@ -38,7 +38,7 @@ export function LoginInvester() {
 
     return <>
         <div>
-            <h2>Login to your account</h2>
+            <h2>Login to your Invester account</h2>
             <form>
                 <input title="uname"
                 value={username}

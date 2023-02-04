@@ -1,19 +1,36 @@
 import { useState } from "react"
-import { useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useAsync, useAsyncFn } from "../hooks/useAsync"
-import { PostWithUser } from "../services/posts"
+import { GetInvestersTopic } from "../services/comment"
+import { getInvesters, getPostTopic } from "../services/posts"
 import { Link } from "react-router-dom"
-
 export function DashboardInv() {
-    const {invID} = useParams()
+    const navigate = useNavigate()
+    const userID = localStorage.getItem("user_id") 
+    const investerID = localStorage.getItem("invester_id")
+    const startupID = localStorage.getItem("startup_id")
+    if(investerID===null) {
+        if(investerID===null){
+            const goToHome = () => navigate(`/Login`)
+            goToHome()
+        }
+    }
     
-    // boht sari posts with with some params to ye karenge
-    const {loading, error, value : posts} = useAsync(()=> PostWithUser(invID)
-    ,[invID])
+    const [topic, setTopic] = useState(null)
+
+    const GetInvesterTopicFn = useAsyncFn(GetInvestersTopic)
+
+    const temp = GetInvesterTopicFn
+        .execute({id: investerID})
+        .then(invester=>{
+            setTopic(invester.intrest)
+        })
+
+    const {loading, error, value : posts} = useAsync(()=> getPostTopic(topic)
+    ,[topic])
     if(loading) return <h1>loading</h1>
     if(error) return <h1 className="msg-error">{error}</h1>
     
-
     return posts.map(post => {
         return (
             <h1 key={post.id}>
@@ -21,5 +38,4 @@ export function DashboardInv() {
             </h1>
         )
     })
-    
 }

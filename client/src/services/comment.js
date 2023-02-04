@@ -43,15 +43,22 @@ export function createComment( {postId, message, parentId}) {
  }
 
  export function LoginVerificationInvester({password, email}) {
-    return makereq(`login/invester`, {
+    return makereq(`/login/invester`, {
         method: "POST",
         data: {password, email},
     })
  }
 
  export function LoginVerificationStartup({password, email}) {
-    return makereq(`login`, {
+    return makereq(`/login`, {
         method: "POST",
         data: {password, email},
+    })
+ }
+
+ export function GetInvestersTopic({id}){
+    return makereq(`/invester/${id}`,{
+        method: "POST",
+        data: {id},
     })
  }

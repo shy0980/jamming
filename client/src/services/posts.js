@@ -21,3 +21,7 @@ export function PostWithUser(userID){
     console.log("inside postwithuser with user id : "+ userID)
     return makereq(`/investers/${userID}`)
  } 
+
+ export function getPostTopic(topic){
+    return makereq(`/posts/search/${topic}`)
+ }
