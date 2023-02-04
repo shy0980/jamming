@@ -4,7 +4,7 @@ import { useAsyncFn } from "../hooks/useAsync"
 import { LoginVerificationInvester } from "../services/comment"
 
 
-export function InvesterLogin() {
+export function LoginInvester() {
     const navigate = useNavigate()
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
