@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Post" ADD COLUMN     "tokens" INTEGER NOT NULL DEFAULT 10;
