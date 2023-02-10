@@ -15,6 +15,7 @@ import { RegisterPost } from "./RegisterPost/RegisterPost";
 import { SignupInvester } from "./signup/signupInvester";
 import M from "materialize-css";
 import { DashboardInv } from "./dashboard/DashboardInvester";
+import { SingleInvester } from "./components/showInv";
 
 function App() {
   
@@ -22,6 +23,7 @@ function App() {
   <div className="container">
     <NavBarMain />
     <Routes>
+      <Route path="/Invester/:id" element={<SingleInvester/>}/>
       <Route path="/registerPost" element={<RegisterPost/>}/>
       <Route path="/login" element={<Login />}/>
       <Route path="/" element={<PostList />}/>

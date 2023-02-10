@@ -45,8 +45,8 @@ app.get("/allInvester", async(req,res)=>{
         select: {
             id: true,
             name: true,
-            password: true,
             emailId: true,
+            intrest: true,
         }
     }))
 })  
@@ -110,6 +110,7 @@ app.get("/posts/:id", async (req,res) =>{
                 body: true,
                 title: true,
                 topic: true,
+                upvotescount: true,
                 comments: {
                     orderBy: {
                         createdat: "desc"
@@ -235,7 +236,7 @@ app.post("/postRegister", async(req, res)=>{
 })
 
 //addupvoteremoveupvote
-app.get("/posts/:postID/:userID/upvote", async(req,res)=>{
+app.post("/posts/:postID/:userID/upvote", async(req,res)=>{
     const isAvailabe = await commitToDB(prisma.upvotes.findFirst({
         where:{
             userID : req.params.userID,
@@ -247,25 +248,46 @@ app.get("/posts/:postID/:userID/upvote", async(req,res)=>{
     }))
     console.log(isAvailabe)
     if(isAvailabe===null){
-        console.log("creating comment")
+        console.log("creating upvotes")
          await commitToDB(prisma.upvotes.create({
             data:{
                 userID: req.params.userID,
                 postID: req.params.postID,
             }
          }))
+         await commitToDB(prisma.post.update({
+            where:{
+                id: isAvailabe.id,
+            },
+            data: {    
+                upvotescount :{
+                    increment: 1,
+                }
+            }
+        }))
+
     }
     // delete
     else{
-        console.log("deleting comment")
+        console.log("deleting upvote")
         await commitToDB(prisma.upvotes.delete({
             where:{
                 id: isAvailabe.id,
             }
         }))
+        await commitToDB(prisma.post.update({
+            where:{
+                id: isAvailabe.id,
+            },
+            data: {    
+                upvotescount :{
+                    decrement: 1,
+                }
+            }
+        }))
         console.log("deleting comment acc to me")
     }
-    //number of likes on post
+    //number of ipvotes on post
     console.log("returning fucntiianowd")
     return await commitToDB(prisma.upvotes.aggregate({
         where:{
@@ -312,6 +334,7 @@ app.get("/posts/search/:topic", async(req,res)=>{
             body: true,
             topic: true,
             year: true,
+            upvotecount: true,
         }
     }))
 })

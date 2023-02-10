@@ -25,3 +25,7 @@ export function PostWithUser(userID){
  export function getPostTopic(topic){
     return makereq(`/posts/search/${topic}`)
  }
+
+ export function GetAllInvesters(){
+    return makereq(`/allInvester`)
+ }

@@ -62,3 +62,10 @@ export function createComment( {postId, message, parentId}) {
         data: {id},
     })
  }
+
+ export function makeUpvote({user_id,post_id}){
+    return makereq(`/posts/${post_id}/${user_id}/upvote`,{
+        method: "POST",
+        data: {user_id,post_id},
+    })
+ }

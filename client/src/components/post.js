@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { usePost } from "../context/PostContext";
 import { useAsyncFn, useAsync } from "../hooks/useAsync";
 import { createComment } from "../services/comment";
@@ -8,7 +9,8 @@ import { CommentList } from "./CommentList";
 export function Post() {
     const {post, rootComments, createLocalComment} = usePost()
     const { loading, error, execute: createCommentFn} = useAsyncFn(createComment)
-    
+    const [like, setLikes] =useState(null);
+
     function onCommentCreate(message){
       return createCommentFn({postId: post.id, message}).then(
         createLocalComment
@@ -17,9 +19,12 @@ export function Post() {
     const {loadingone, errorone, value : count} = useAsync(()=> getUpvotes(post.id)
     ,[post.id])
     console.log(count)
-
+    // what to do -->
+    // can use makeUpvote function to add delete upvote it return numbers of upvote on that post
+    // use local storage to find userid and enable or disable upvotes button
     return (
         <>
+          <h1>{post.upvotescount}</h1>
           <h1>{post.title}</h1>
           <h2>{post.topic}</h2>
           <article>{post.body}</article>
