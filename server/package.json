@@ -5,7 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "devStart": "nodemon server.js"
+    "devStart": "nodemon server.js",
+    "clearDB": "node prisma/resetDB.js",
+    "putSchema": "npx prisma migrate dev",
+    "putValues": "node prisma/seed.js"
   },
   "keywords": [],
   "author": "",
