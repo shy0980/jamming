@@ -2,20 +2,21 @@ import { useState,useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAsyncFn } from "../hooks/useAsync"
 import { LoginVerificationInvester } from "../services/comment"
+import { useCookies } from 'react-cookie';
 
 
 export function LoginInvester() {
     const navigate = useNavigate()
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const [cookies, setCookie] = useCookies(['user']);
 
     const LoginVerificationInvesterFn = useAsyncFn(LoginVerificationInvester)
 
     const [userID, setUserID] = useState(null)
       useEffect(()=>{
         if(userID!==null){
-            localStorage.setItem("invester_id",userID)
-            localStorage.setItem("type", "invester")
+            setCookie('Inv_id', userID, { path: '/' });
             const goToHome = () => navigate(`/${userID}/maininvester`)
             goToHome()
         }

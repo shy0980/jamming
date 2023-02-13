@@ -39,7 +39,8 @@ const CURRENT_USER_ID = (
         }
     }
   } 
-//list all investers
+
+//list all investers FOR DEBUGGING
 app.get("/allInvester", async(req,res)=>{
     return await commitToDB(prisma.invester.findMany({
         select: {
@@ -51,7 +52,7 @@ app.get("/allInvester", async(req,res)=>{
     }))
 })  
   
-// post list
+// GET ALL POSTs(STARTUPS)
 app.get("/posts", async (req,res) =>{
     return await commitToDB(
         prisma.post.findMany( {
@@ -63,7 +64,8 @@ app.get("/posts", async (req,res) =>{
         })
     )
 })
-//display all user
+
+//display all user FOR DEBUGGING ONLY
 app.get("/allUsers", async (req,res) =>{
     return await commitToDB(
         prisma.user.findMany( {
@@ -75,7 +77,8 @@ app.get("/allUsers", async (req,res) =>{
         })
     )
 })
-// user ka dashboard
+
+// RETURNS STARTUP RELATED TO USER with HIS/HER INTREST
 app.get("/:userId/main", async(req, res)=>{
     const UserIntrest= await commitToDB(prisma.user.findFirst({
         where:{
@@ -99,7 +102,8 @@ app.get("/:userId/main", async(req, res)=>{
         }
     }))
 })
-// isse ek post banegi
+
+// TO GET A POST WITH COMMENTS TOO IG DO NOT EDIT
 app.get("/posts/:id", async (req,res) =>{
     return await commitToDB(
         prisma.post.findUnique( {
@@ -132,6 +136,7 @@ app.get("/posts/:id", async (req,res) =>{
         })
     )
 })
+
 //signup
 app.post("/signup/user", async(req,res)=>{
     if(req.body.email === null || req.body.password=== null || req.body.name===null || req.body.intrest===null){
@@ -160,7 +165,8 @@ app.post("/signup/user", async(req,res)=>{
         }
     }))
 })
-//comments
+
+//comments DO NOT CHANGE ANY COMMENT RELATED BACKEND 
 app.post("/posts/:id/comments", async(req,res)=>{
     if(req.body.message === "" || req.body.message === null) {
         return res.send(app.httpErrors.badRequest("msg required")
@@ -179,7 +185,8 @@ app.post("/posts/:id/comments", async(req,res)=>{
         })
     )
 }) 
-//adding comment
+
+//adding comment DO NOT CHANGE ANY COMMENT RELATED BACKEND 
 app.put("/posts/:postId/comments/:commentId", async (req, res) => {
     if (req.body.message === "" || req.body.message == null) {
       return res.send(app.httpErrors.badRequest("Message is required"))
@@ -198,6 +205,7 @@ app.put("/posts/:postId/comments/:commentId", async (req, res) => {
       })
     )
 })
+
 // login
 app.post("/login", async(req, res)=>{
     const uname = req.body.email
@@ -213,6 +221,7 @@ app.post("/login", async(req, res)=>{
         }
     }))
 })
+
 // for regitering post
 app.post("/postRegister", async(req, res)=>{
     await commitToDB(prisma.post.create({
@@ -235,7 +244,7 @@ app.post("/postRegister", async(req, res)=>{
     }))
 })
 
-//addupvoteremoveupvote
+//addupvoteremoveupvote AND Return count for now upadted likes on that post
 app.post("/posts/:postID/:userID/upvote", async(req,res)=>{
     const isAvailabe = await commitToDB(prisma.upvotes.findFirst({
         where:{
@@ -312,7 +321,7 @@ app.get("/upvote/:postID", async(req,res)=>{
     })
 })
 
-//listupvotes
+//listupvotes FOR POSTMAN ONLY
 app.get("/allupvotes", async(req,res)=>{
     return await commitToDB(prisma.upvotes.findMany({
         select:{
@@ -386,7 +395,6 @@ app.post("/login/invester", async(req,res)=>{
     }))
 })
 
-
 // list upvoted of particular posst
 app.get("/upvotes/:postID", async(req,res)=>{
     return await commitToDB(prisma.upvotes.aggregate({
@@ -395,39 +403,6 @@ app.get("/upvotes/:postID", async(req,res)=>{
         },
         _count:{
             id: true,
-        }
-    }))
-})
-
-//suggesting startup to invester
-app.put("/suggest/:postID/:invID", async(req,res)=>{
-    const isAllowed = await commitToDB(prisma.post.findFirst({
-        where:{
-            id:req.params.postID,
-        },
-        select:{
-            tokens: true,
-        }
-    }))
-
-    if(tokens===0){
-        res.send(app.httpErrors.badRequest("NAH HO PAYE BHAI"))
-    }
-
-    await commitToDB(prisma.suggestion.create({
-        data:{
-            investerID: req.params.invID,
-            postID: req.params.postID,
-        }
-    }))
-    await commitToDB(prisma.post.update({
-        where:{
-            id:req.params.postID,
-        },
-        data:{
-            tokens: {
-                decrement: 1,
-            }
         }
     }))
 })
@@ -444,6 +419,97 @@ app.post("/invester/:id", async(req, res)=>{
             intrest: true,
         }
     })))    
+})
+
+//SCHEMA CONTAINS A SUGGESTION if A STARTUP WANT TO SUGGEST HIS STARTUP TO INVESTER WITH DEDUCTION OF A TOOKEN 
+// AND RETURN HOLE POST DETAILS WITH NEW TOKENS COUNT
+app.post("/:inv_id/suggest/:post_id", async(req,res)=>{
+    await commitToDB(prisma.suggestion.create({
+        data: {
+            investerID: req.params.inv_id,
+            postID: req.params.post_id,
+        }
+    }))
+
+    await commitToDB(prisma.post.update({
+        where:{
+            id: req.params.post_id,
+        },
+        data: {
+            tokens:{
+                decrement: 1,
+            }
+        }
+    }))
+
+    return await commitToDB(prisma.post.findFirst({
+        where:{
+            id: req.params.post_id,
+        },
+        select:{
+            email: true,
+            title: true,
+            body: true,
+            topic: true,
+            year: true,
+            upvotescount: true,
+            tokens:true,
+        }
+    }))
+})
+
+// get all auggestion on invester side
+app.get("/suggestion/:inv_id", async(req,res)=>{
+    const postids = await commitToDB(prisma.suggestion.findMany({
+        where:{
+            investerID: req.params.inv_id,
+        },
+        select:{
+            postID: true,
+        }
+    }))
+
+    return await commitToDB(prisma.post.findMany({
+        where:{
+            id: {
+                in: postids.map(postid=>postids.postID)
+            }
+        },
+        select:{
+            id: true,
+            email: true,
+            title: true,
+            body: true,
+            topic: true,
+            upvotescount: true,
+        }
+    }))
+})
+
+// REturns the invester details to whom a post(startup has) done given his suggestion
+app.get("/suggestion/:post_id", async(req,res)=>{
+    const investerids = await commitToDB(prisma.suggestion.findMany({
+        where:{
+            investerID: req.params.inv_id,
+        },
+        select:{
+            investerID: true,
+        }
+    }))
+
+    return await commitToDB(prisma.invester.findMany({
+        where:{
+            id: {
+                in: investerids.map(investerid=>investerids.investerID)
+            }
+        },
+        select:{
+            id: true,
+            name: true,
+            intrest: true,
+            emailId: true,
+        }
+    }))
 })
 
 async function commitToDB(promise) {

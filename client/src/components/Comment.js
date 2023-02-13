@@ -7,6 +7,7 @@ import { CommentForm } from "./CommentForm"
 import { useAsyncFn } from "../hooks/useAsync"
 import { createComment, updateComment } from "../services/comment"
 import { useUser } from "../hooks/useUser"
+import { useCookies } from 'react-cookie';
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
     dateStyle: "medium",
@@ -15,6 +16,7 @@ const dateFormatter = new Intl.DateTimeFormat(undefined, {
 
 
 export function Comment({id, message, user, createdat}) {
+    const [cookies, setCookie] = useCookies(['user']);
     const { post, getReplies ,createLocalComment, updateLocalComment} = usePost()
     const [areChildrenHidden, setAreChildrenHidden] = useState(false)
     const [isReplying, setIsReplying] = useState(false)
@@ -42,7 +44,7 @@ export function Comment({id, message, user, createdat}) {
           })
     }
 
-    const curruser = useUser()
+    const curruser = cookies.User_id
 
     return <>
         <div className="comment">

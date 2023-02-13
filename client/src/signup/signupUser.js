@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { useAsyncFn } from "../../hooks/useAsync"
-import { SignUp } from "../comment"
 import { useNavigate } from "react-router-dom"
 import { FaWindows } from "react-icons/fa"
+import { useAsyncFn } from "../hooks/useAsync"
+import { SignUp } from "../services/comment"
 
 export function SignupUser() {
     const [username, setUsername] = useState("")
